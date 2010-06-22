@@ -6,7 +6,7 @@ module Devise #:nodoc:
   # module OAuth2Authenticatable #:nodoc:
     module Models #:nodoc:
 
-      # OAuth2 Connectable Module, responsible for validating authenticity of a
+      # Oauth2Authenticatable, responsible for validating authenticity of a
       # user and storing credentials while signing in using their OAuth2 account.
       #
       # == Configuration:
@@ -70,23 +70,33 @@ module Devise #:nodoc:
         #   # Overridden in OAuth2 Connect:able model, e.g. "User".
         #   #
         #   def before_oauth2_auto_create(oauth2_user_attributes)
-
         #     self.profile.first_name = oauth2_user_attributes.first_name
-
-        #
         #   end
-        #
-        # == For more info:
-        #
-        #   * http://oauth2er.pjkh.com/user/populate
-        #
         def on_before_oauth2_auto_create(oauth2_user_attributes)
-          
           if self.respond_to?(:before_oauth2_auto_create)
-            self.send(:before_oauth2_auto_create, oauth2_user_attributes) rescue nil
+            self.send(:before_oauth2_auto_create, oauth2_user_attributes)
           end
         end
-
+        
+        # Hook that gets called *after* connect (only at creation). Useful for
+        # specifiying additional user info (etc.) from OAuth2.
+        #
+        # Default: Do nothing.
+        #
+        # == Examples:
+        #
+        #   # Overridden in OAuth2 Connectable model, e.g. "User".
+        #   #
+        #   def before_oauth2_auto_create(oauth2_user_attributes)
+        #     self.profile.first_name = oauth2_user_attributes.first_name
+        #   end
+        def on_after_oauth2_auto_create(oauth2_user_attributes)
+          if self.respond_to?(:after_oauth2_auto_create)
+            self.send(:after_oauth2_auto_create, oauth2_user_attributes)
+          end
+          on_after_oauth2_connect
+        end        
+        
         # Hook that gets called *after* a connection (each time). Useful for
         # fetching additional user info (etc.) from OAuth2.
         #
@@ -101,17 +111,8 @@ module Devise #:nodoc:
         #   end
         #
         def on_after_oauth2_connect(oauth2_user_attributes)
-          
-          if self.respond_to?(:after_oauth2_auto_create)
-            self.send(:after_oauth2_auto_create, oauth2_user_attributes) rescue nil
-          end
-        end
-
-        # Optional: Store session key.
-        #
-        def store_session(using_token)
-          if self.token != using_token
-            self.update_attribute(self.send(:"#{self.class.oauth2_token_field}"), using_token)
+          if self.respond_to?(:after_oauth2_connect)
+            self.send(:after_oauth2_connect, oauth2_user_attributes)
           end
         end
       
@@ -176,8 +177,7 @@ module Devise #:nodoc:
             #   end
             #
             def find_for_oauth2(uid, conditions = {})
-              
-              self.find_by_oauth2_uid(uid, :conditions => conditions)
+              self.send(:"find_by_#{self.oauth2_uid_field}", uid, :conditions => conditions)  
             end
             
             

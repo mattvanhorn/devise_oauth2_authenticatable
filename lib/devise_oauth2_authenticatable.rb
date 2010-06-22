@@ -2,14 +2,11 @@
 require 'devise'
 require 'oauth2'
 
-
 require 'devise_oauth2_authenticatable/model' 
 require 'devise_oauth2_authenticatable/strategy'
 require 'devise_oauth2_authenticatable/schema'
 require 'devise_oauth2_authenticatable/routes'
-#require 'devise_oauth2_authenticatable/controller_filters'
 require 'devise_oauth2_authenticatable/view_helpers'
-
 
 module Devise
   # Specifies the name of the database column name used for storing
@@ -29,13 +26,18 @@ module Devise
   mattr_accessor :oauth2_auto_create_account
   @@oauth2_auto_create_account = true
   
+  # Specifies if account should be created if no account exists for
+  # a specified Facebook UID or not.
+  mattr_accessor :oauth2_callback_path
+  @@oauth2_callback_path = '/oauth_callback'
+    
   def self.oauth2_client
     @@oauth2_client ||= OAuth2::Client.new(OAUTH2_CONFIG['client_id'], OAUTH2_CONFIG['client_secret'], :site => OAUTH2_CONFIG['authorization_server'])
   end
   
   
   def self.session_sign_in_url(request, mapping)
-    url = URI.parse(request.url)
+    url = URI.parse(URI.escape(request.url, /\|/))
     url.path = "#{mapping.parsed_path}/#{mapping.path_names[:sign_in]}"
     url.query = nil
     url.to_s
