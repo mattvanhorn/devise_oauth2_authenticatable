@@ -1,6 +1,7 @@
 en:
   devise:
     sessions:
+      oauth2_auto_create_disabled: "Automatic creation of accounts from Facebook is disabled"
       oauth2_invalid: "Could not login. Invalid account."
       oauth2_timeout: "OAuth2 session expired., please sign in again to continue."
       oauth2_authenticity_token: "Something went wrong. For security reasons, please sign in again." # Revise this message =)

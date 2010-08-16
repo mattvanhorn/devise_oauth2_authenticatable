@@ -60,7 +60,7 @@ module Devise #:nodoc:
                   fail!(:oauth2_invalid)
                 end
               else
-                fail!(:oauth2_invalid)
+                fail!(:oauth2_auto_create_disabled)
               end
             end
           
