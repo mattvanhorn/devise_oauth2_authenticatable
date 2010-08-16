@@ -27,7 +27,7 @@ module Devise #:nodoc:
             # Verify User Auth code and get access token from auth server: will error on failue
             access_token = Devise::oauth2_client.web_server.get_access_token( 
               params[:code], 
-              :redirect_uri => callback_url.to_s
+              :redirect_uri => callback_url.to_s.gsub('redirect_uri=http:',"redirect_uri=#{request.protocol}:")
             )
                         
             # Get user details from OAuth2 Service    
