@@ -1,11 +1,10 @@
 # encoding: utf-8
 require 'devise/strategies/base'
 
-
 module Devise #:nodoc:
   module Oauth2Authenticatable #:nodoc:
     module Strategies #:nodoc:
-
+      
       # Default strategy for signing in a user using Facebook.
       # Redirects to sign_in page if it's not authenticated
       #
@@ -15,7 +14,7 @@ module Devise #:nodoc:
         def valid?
          valid_controller? && valid_params? && mapping.to.respond_to?('authenticate_with_oauth2') 
         end
-
+        
         # Authenticate user with OAuth2 
         def authenticate!
           klass = mapping.to
@@ -27,7 +26,7 @@ module Devise #:nodoc:
             # Verify User Auth code and get access token from auth server: will error on failue
             access_token = Devise::oauth2_client.web_server.get_access_token( 
               params[:code], 
-              :redirect_uri => callback_url.to_s.gsub('redirect_uri=http:',"redirect_uri=#{request.protocol}:")
+              :redirect_uri => callback_url.to_s
             )
                         
             # Get user details from OAuth2 Service    
@@ -52,13 +51,13 @@ module Devise #:nodoc:
                   u.on_before_oauth2_auto_create(oauth2_user_attributes)
                 end
 
-                begin
+                # begin
                   user.save(true)
                   user.on_after_oauth2_auto_create(oauth2_user_attributes)
                   success!(user)
-                rescue
+                # rescue
                   fail!(:oauth2_invalid)
-                end
+                # end
               else
                 fail!(:oauth2_auto_create_disabled)
               end
