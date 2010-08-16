@@ -65,7 +65,9 @@ module Devise #:nodoc:
             end
           
           rescue => e
+            raise e
             fail!(e.message)
+            
           end
         end
 
