@@ -51,13 +51,14 @@ module Devise #:nodoc:
                   u.on_before_oauth2_auto_create(oauth2_user_attributes)
                 end
 
-                # begin
+                begin
                   user.save(true)
                   user.on_after_oauth2_auto_create(oauth2_user_attributes)
                   success!(user)
-                # rescue
-                # fail!(:oauth2_invalid)
-                # end
+                rescue => e
+                  raise e
+                  # fail!( e.message )
+                end
               else
                 fail!(:oauth2_auto_create_disabled)
               end
