@@ -94,7 +94,7 @@ module Devise #:nodoc:
           if self.respond_to?(:after_oauth2_auto_create)
             self.send(:after_oauth2_auto_create, oauth2_user_attributes)
           end
-          on_after_oauth2_connect
+          on_after_oauth2_connect(oauth2_user_attributes)
         end        
         
         # Hook that gets called *after* a connection (each time). Useful for
@@ -110,7 +110,7 @@ module Devise #:nodoc:
         #     # See "on_before_oauth2_connect" example.
         #   end
         #
-        def on_after_oauth2_connect(oauth2_user_attributes)
+        def on_after_oauth2_connect(oauth2_user_attributes = {})
           if self.respond_to?(:after_oauth2_connect)
             self.send(:after_oauth2_connect, oauth2_user_attributes)
           end
