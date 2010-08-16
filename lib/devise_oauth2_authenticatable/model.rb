@@ -72,7 +72,7 @@ module Devise #:nodoc:
         #   def before_oauth2_auto_create(oauth2_user_attributes)
         #     self.profile.first_name = oauth2_user_attributes.first_name
         #   end
-        def on_before_oauth2_auto_create(oauth2_user_attributes)
+        def on_before_oauth2_auto_create(oauth2_user_attributes = {})
           if self.respond_to?(:before_oauth2_auto_create)
             self.send(:before_oauth2_auto_create, oauth2_user_attributes)
           end
@@ -90,7 +90,7 @@ module Devise #:nodoc:
         #   def before_oauth2_auto_create(oauth2_user_attributes)
         #     self.profile.first_name = oauth2_user_attributes.first_name
         #   end
-        def on_after_oauth2_auto_create(oauth2_user_attributes)
+        def on_after_oauth2_auto_create(oauth2_user_attributes = {})
           if self.respond_to?(:after_oauth2_auto_create)
             self.send(:after_oauth2_auto_create, oauth2_user_attributes)
           end
